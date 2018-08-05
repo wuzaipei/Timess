@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+		<style type="text/css">
+			#liuliu{
+				width: 900px;
+				height: 800px;
+				margin: 0 auto;
+				background: url(img/beijing.jpg);
+				background-size: 100% 100%;
+				text-align: center;
+				line-height: 900px;
+			}
+	
+		</style>
+	</head>
+	<body>
+		<div id="liuliu">
+			<canvas id="canvas1" width="800" height="800"></canvas>
+		</div>
+		<audio src="img/duibai.mp3" autoplay="autoplay"></audio>
+		<!--
+			1、表盘
+			2、刻度
+			3、指针
+			4、获取时间
+			5、同步时钟
+		-->
+		
+		<script type="text/javascript">
+			
+//			$("#liuliu").css({
+//				width: '900px';
+//				height: '900px';
+//				margin: '0 auto';
+////				background:url() ;
+//			})
+//			var canvas1 = $('#canvas1')[0]
+			var xhr = document.querySelector("#canvas1")
+			var xhr = canvas1.getContext('2d')
+			
+			
+			function Times(){
+				xhr.clearRect(0,0,800,800)
+				//表盘：
+				xhr.beginPath()
+				xhr.arc(400,400,300,0,2*Math.PI)
+				xhr.lineWidth = 10
+				xhr.strokeStyle = 'purple'
+				xhr.stroke()
+				xhr.closePath()
+				
+				xhr.save() //保留的是坐标系的位置以及这些属性与样式
+	
+				xhr.translate(400,400)
+				xhr.save()  //保留了移动后的坐标原点为400.400的位置。
+				//刻度
+				for(var i =0;i<60;i++){
+					xhr.beginPath()
+					//移动坐标系
+					xhr.rotate(2*Math.PI/60)
+					if ((i+1)%5==0){
+					
+						xhr.moveTo(250,0)
+						xhr.lineTo(280,0)
+						xhr.arc(240,0,5,0,2*Math.PI)
+						xhr.arc(290,0,5,0,2*Math.PI)
+						xhr.strokeStyle = 'black'
+						xhr.lineWidth = 5
+						xhr.stroke()
+					}else if((i+1)%3==0){
+						xhr.moveTo(250,0)
+						xhr.lineTo(280,0)
+	//					xhr.arc(240,0,5,0,2*Math.PI)
+						xhr.strokeStyle = 'deeppink'
+						xhr.lineWidth = 3
+						xhr.stroke()
+					}else{
+						xhr.moveTo(250,0)
+						xhr.lineTo(280,0)
+	//					xhr.arc(240,0,5,0,2*Math.PI)
+						xhr.strokeStyle = 'lightslategrey'
+						xhr.lineWidth = 3
+						xhr.stroke()
+					}
+					
+					
+					
+					xhr.closePath()
+				}
+				
+				
+				//指针
+				xhr.restore()
+				
+				xhr.save()
+				
+				
+				var newTime = new Date()
+				
+				
+				var hour = newTime.getHours()
+				var min = newTime.getMinutes()
+				var sec = newTime.getSeconds()
+				
+				if (hour>=12){
+					hour = hour-12
+				}
+				
+				
+				
+				xhr.textAlign = 'center'
+				xhr.font = '50px 微软雅黑'
+				xhr.fillStyle = 'white'
+				xhr.fillText(hour+':'+min+':'+sec,0,-330)
+				
+				
+				console.log(hour,min,sec)
+				
+				//将整个坐标逆时针旋转九十度
+				xhr.rotate(-2*Math.PI/4)
+				xhr.save()
+				//画秒针
+				xhr.beginPath()
+				xhr.rotate(2*Math.PI/60*sec)
+				xhr.moveTo(-60,0)
+				xhr.lineTo(200,0)
+				xhr.strokeStyle = 'red'
+				xhr.lineWidth = 3
+		
+				xhr.stroke()
+				xhr.closePath()
+				
+				
+				xhr.restore()
+				xhr.save()
+				
+				//绘制分针
+				xhr.beginPath()
+				xhr.rotate(2*Math.PI/60*min+2*Math.PI/60*sec/60)
+				xhr.moveTo(-30,0)
+				xhr.lineTo(180,0)
+				xhr.strokeStyle = 'green'
+				xhr.lineWidth = 5
+				xhr.stroke()
+				xhr.closePath()
+				
+				xhr.restore()
+				xhr.save()
+				
+				//时针
+				xhr.beginPath()
+				xhr.rotate(2*Math.PI/12*hour+2*Math.PI/12*min/60+2*Math.PI/12/60*sec/60)
+				xhr.moveTo(0,0)
+				xhr.lineTo(140,0)
+				xhr.arc(0,0,5,0,2*Math.PI)
+				xhr.strokeStyle = 'darkorange'
+				xhr.lineWidth = 8
+				xhr.stroke()
+				xhr.closePath()
+				
+				xhr.restore()
+				xhr.restore()
+				xhr.restore()
+				requestAnimationFrame(Times)
+			}
+			
+			
+//			setInterval(function(){
+//				Times()
+//			},1000)
+			
+			//请求动画针
+			requestAnimationFrame(Times)
+			
+		</script>
+	</body>
+</html>
